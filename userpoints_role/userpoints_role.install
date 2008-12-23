@@ -1,8 +1,12 @@
 <?php
 
-// $Id: userpoints_role.install,v 1.1.2.1 2008-12-18 02:07:35 kbahey Exp $
+// $Id: userpoints_role.install,v 1.1.2.2 2008-12-23 15:07:07 kbahey Exp $
 
+/**
+ * Implementation of hook_uninstall()
+ */
 function userpoints_role_uninstall() {
+  // Delete the variables for this module, both the old and new ones.
   db_query("DELETE FROM {variable} WHERE name LIKE 'userpoints_role%%'");
   db_query("DELETE FROM {variable} WHERE name LIKE 'userpoints_email%%'");
 }
