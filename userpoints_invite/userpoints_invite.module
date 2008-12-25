@@ -1,6 +1,6 @@
 <?php
 
-//$Id: userpoints_invite.module,v 1.9 2008-11-07 02:59:38 kbahey Exp $
+//$Id: userpoints_invite.module,v 1.9.2.1 2008-12-25 14:37:01 kbahey Exp $
 
 // Copyright 2005-2007 Khalid Baheyeldin http://2bits.com
 
@@ -59,6 +59,15 @@ function userpoints_invite_userpoints($op, $points = 0, $uid = 0, $operation = '
         '#default_value' => variable_get(USERPOINTS_INVITE_REGISTER_REMOVE_ON_DELETE, 0),
       );
 
+      $form[$group]['userpoints_invite_tid'] = array(
+        '#type'          => 'select',
+        '#title'         => t('Category'),
+        '#default_value' => variable_get(userpoints_invite_tid, 0),
+        '#options'       => userpoints_get_categories(),
+        '#description'   => t('Invites will be assigned to this category. You can modify what categories are available by modifying the <a href="!url">Userpoints taxonomy</a>.', 
+          array('!url' => url('admin/content/taxonomy/'. variable_get(USERPOINTS_CATEGORY_DEFAULT_VID, '')))),
+      );
+      
       return $form;
   }
 }
@@ -68,24 +77,26 @@ function userpoints_invite($op, $args) {
     case 'invite':
       $points = variable_get(USERPOINTS_INVITE_INVITE, 0);
       $params = array(
-        'points' => $points,
-        'uid' => $args['inviter']->uid,
-        'operation' => 'invite '.$op,
-        'entity_id' => $args['inviter']->uid,
+        'points'      => $points,
+        'uid'         => $args['inviter']->uid,
+        'operation'   => 'invite '.$op,
+        'entity_id'   => $args['inviter']->uid,
         'entity_type' => 'user',
-        'reference' => 'userpoints_invite'
+        'tid'         => variable_get('userpoints_invite_tid', 0),
+        'reference'   => 'userpoints_invite'
       );
       userpoints_userpointsapi($params);      
       break;
     case 'cancel':
       $points = -variable_get(USERPOINTS_INVITE_INVITE, 0);
       $params = array(
-        'points' => $points,
-        'uid' => $args['inviter']->uid,
-        'operation' => 'invite '.$op,
-        'entity_id' => $args['inviter']->uid,
+        'points'      => $points,
+        'uid'         => $args['inviter']->uid,
+        'operation'   => 'invite '.$op,
+        'entity_id'   => $args['inviter']->uid,
         'entity_type' => 'user',
-        'reference' => 'userpoints_invite'
+        'tid'         => variable_get('userpoints_invite_tid', 0),
+        'reference'   => 'userpoints_invite'
       );
       userpoints_userpointsapi($params);
       break;
@@ -93,22 +104,24 @@ function userpoints_invite($op, $args) {
       $op = 'register';
       $points = variable_get(USERPOINTS_INVITE_REGISTER_INVITER, 0);
       $params = array(
-        'points' => $points,
-        'uid' => $args['inviter']->uid,
-        'operation' => 'invite '.$op.' invited '.$args['invitee']->uid,
-        'entity_id' => $args['inviter']->uid,
+        'points'      => $points,
+        'uid'         => $args['inviter']->uid,
+        'operation'   => 'invite '.$op.' invited '.$args['invitee']->uid,
+        'entity_id'   => $args['inviter']->uid,
         'entity_type' => 'user',
-        'reference' => 'userpoints_invite'
+        'tid'         => variable_get('userpoints_invite_tid', 0),
+        'reference'   => 'userpoints_invite'
       );
       userpoints_userpointsapi($params);
       $points = variable_get(USERPOINTS_INVITE_REGISTER_INVITEE, 0);
       $params = array(
-        'points' => $points,
-        'uid' => $args['invitee']->uid,
-        'operation' => 'invite '.$op. ' invited by '.$args['inviter']->uid,
-        'entity_id' => $args['invitee']->uid,
+        'points'      => $points,
+        'uid'         => $args['invitee']->uid,
+        'operation'   => 'invite '.$op. ' invited by '.$args['inviter']->uid,
+        'entity_id'   => $args['invitee']->uid,
         'entity_type' => 'user',
-        'reference' => 'userpoints_invite'
+        'tid'         => variable_get('userpoints_invite_tid', 0),
+        'reference'   => 'userpoints_invite'
       );
       userpoints_userpointsapi($params);
       break;
@@ -118,18 +131,17 @@ function userpoints_invite($op, $args) {
 function userpoints_invite_user($op, &$edit, &$account, $category = NULL) {
   switch($op) {
     case 'delete':
-      if (variable_get(USERPOINTS_INVITE_REGISTER_REMOVE_ON_DELETE, 0) == 1) {
-        $result = db_query("SELECT uid FROM {userpoints_txn} WHERE operation = '%s' ORDER BY time_stamp DESC LIMIT 1", 'invite register invited '.$account->uid);
-        if (db_num_rows($result) > 0) {
-          $uid = db_result($result);
-          $points = -(variable_get(USERPOINTS_INVITE_INVITE, 0) + variable_get(USERPOINTS_INVITE_REGISTER_INVITER, 0));
+      if (variable_get(USERPOINTS_INVITE_REGISTER_REMOVE_ON_DELETE, TRUE)) {
+        $uid = db_result(db_query("SELECT uid FROM {userpoints_txn} WHERE operation = '%s' ORDER BY time_stamp DESC LIMIT 1", 'invite register invited '.$account->uid));
+        if ($uid) {
           $params = array(
-            'points' => $points,
-            'uid' => $uid,
-            'operation' => 'invited user '.$account->uid.' deleted',
-            'entity_id' => $uid,
+            'points'      => -(variable_get(USERPOINTS_INVITE_INVITE, 0) + variable_get(USERPOINTS_INVITE_REGISTER_INVITER, 0)),
+            'uid'         => $uid,
+            'operation'   => 'invited user '.$account->uid.' deleted',
+            'entity_id'   => $uid,
             'entity_type' => 'user',
-            'reference' => 'userpoints_invite'
+            'tid'         => variable_get('userpoints_invite_tid', 0),
+            'reference'   => 'userpoints_invite'
           );
           userpoints_userpointsapi($params);
         }
