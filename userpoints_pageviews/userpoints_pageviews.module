@@ -1,9 +1,9 @@
 <?php
-// $Id: userpoints_pageviews.module,v 1.1.4.1 2008-12-04 03:09:46 kbahey Exp $
+// $Id: userpoints_pageviews.module,v 1.1.4.2 2009-01-11 00:46:44 kbahey Exp $
 
 define('USERPOINTS_PAGE_VIEWS', 'userpoints_pageviews');
 
-function userpoints_pageviews_userpoints($op = 'setting', $points = 0, $uid = 0, $event = NULL) {
+function userpoints_pageviews_userpoints($op = 'setting', $params = array()) {
   if ($op == 'setting') {
     $group = 'pageviews';
     $form[$group] = array(
@@ -20,6 +20,16 @@ function userpoints_pageviews_userpoints($op = 'setting', $points = 0, $uid = 0,
       '#size'          => 5,
       '#maxlength'     => 5,
     );
+    
+      $form[$group]['userpoints_pageview_tid'] = array(
+        '#type'          => 'select',
+        '#title'         => t('Category'),
+        '#default_value' => variable_get(userpoints_pageview_tid, 0),
+        '#options'       => userpoints_get_categories(),
+        '#description'   => t('Page views will be assigned to this category. You can modify what categories are available by modifying the <a href="!url">Userpoints taxonomy</a>.', 
+          array('!url' => url('admin/content/taxonomy/'. variable_get(USERPOINTS_CATEGORY_DEFAULT_VID, '')))),
+      );
+      
     return $form;
   }
 }
@@ -38,6 +48,7 @@ function userpoints_pageviews_nodeapi(&$node, $op = 'view', $teaser, $page) {
             userpoints_userpointsapi(array(
               'uid' => $node->uid,
               'points' => variable_get(USERPOINTS_PAGE_VIEWS, 0),
+              'tid'         => variable_get('userpoints_pageview_tid', 0),
               ));
           }
         }

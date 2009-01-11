@@ -1,6 +1,6 @@
 <?php
 
-//$Id: userpoints_invite.module,v 1.9.2.1 2008-12-25 14:37:01 kbahey Exp $
+//$Id: userpoints_invite.module,v 1.9.2.2 2009-01-11 00:46:44 kbahey Exp $
 
 // Copyright 2005-2007 Khalid Baheyeldin http://2bits.com
 
@@ -18,7 +18,7 @@ function userpoints_invite_help($path, $arg) {
   return $output;
 }
 
-function userpoints_invite_userpoints($op, $points = 0, $uid = 0, $operation = '') {
+function userpoints_invite_userpoints($op, $params = array()) {
   switch($op) {
     case 'setting':
       $group = 'invite';

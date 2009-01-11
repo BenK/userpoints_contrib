@@ -1,15 +1,14 @@
-<?
-//  $Id: userpoints_no_negative.module,v 1.1 2008-01-19 12:45:55 greggles Exp $ 
+<?php
+//  $Id: userpoints_no_negative.module,v 1.1.4.1 2009-01-11 00:46:44 kbahey Exp $ 
 
-/**
- * @file
- * Very simple userpoints_contrib to prevent accounts from going (further) negative
- */
 
-/**
- * Implementation of hook_userpoints
- */
-function userpoints_no_negative_userpoints($op, $points = 0, $uid = 0, $event = '') {
+ // @file
+ // Very simple userpoints_contrib to prevent accounts from going (further) negative
+ 
+
+ // Implementation of hook_userpoints
+
+function userpoints_no_negative_userpoints($op, $params = array()) {
   if ($op == 'points before') {
     if ($points < 0) {
       $current_points = userpoints_get_current_points($uid);
