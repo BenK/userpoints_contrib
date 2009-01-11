@@ -1,5 +1,5 @@
 <?php
-//$Id: userpoints_role_exempt.module,v 1.3.2.1 2009-01-11 00:46:44 kbahey Exp $
+//$Id: userpoints_role_exempt.module,v 1.3.2.2 2009-01-11 19:09:44 kbahey Exp $
 
 // Copyright 2005-2008 Khalid Baheyeldin http://2bits.com
 
@@ -37,6 +37,7 @@ function userpoints_role_exempt_userpoints($op, $params = array()) {
       return $form;
 
     case 'points before':
+      $uid = $params['uid'];
       // Check the roles the user belong to, and if they are exempted from userpoints
       $user = user_load(array('uid'=>$uid));
       $rc = TRUE;
