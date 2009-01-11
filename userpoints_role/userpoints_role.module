@@ -1,6 +1,6 @@
 <?php
 
-//$Id: userpoints_role.module,v 1.4.2.3 2009-01-11 00:52:41 kbahey Exp $
+//$Id: userpoints_role.module,v 1.4.2.4 2009-01-11 19:07:14 kbahey Exp $
 
 // Copyright 2005-2008 Khalid Baheyeldin http://2bits.com
 
@@ -95,9 +95,6 @@ function userpoints_role_admin_settings($form_state, $rid) {
  * Role promotion/demotion based on points gained/lost
  */
 function userpoints_role_userpoints($op, $params = array()) {
-  $uid        = $params['uid'];
-  $new_points = $params['points'];
-
   switch($op) {
     case 'setting':
       $group = 'role';
@@ -197,6 +194,9 @@ function userpoints_role_userpoints($op, $params = array()) {
       break;
 
     case 'points after':
+      $uid        = $params['uid'];
+      $new_points = $params['points'];
+
       // Check the roles the user belong to, and if they are exempted from userpoints
       $points = userpoints_get_current_points($uid);
       _userpoints_role_update_roles($uid, $points, $new_points);
