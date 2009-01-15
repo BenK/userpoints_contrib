@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_no_negative.module,v 1.1.4.3 2009-01-11 19:08:36 kbahey Exp $ 
+// $Id: userpoints_no_negative.module,v 1.1.4.4 2009-01-15 16:38:11 kbahey Exp $ 
 
 // @file
 // Very simple userpoints_contrib to prevent accounts from going (further) negative
@@ -12,7 +12,7 @@ function userpoints_no_negative_userpoints($op, $params = array()) {
 
   if ($op == 'points before') {
     if ($points < 0) {
-      $current_points = userpoints_get_current_points($uid);
+      $current_points = userpoints_get_current_points($uid, 'all');
       if (($current_points + $points) < 0) {
         $account = user_load(array('uid' => $uid));
         $message = t('User %uname losing %pointsvalue !points! skipped because it would move thir !points! (further) negative',
