@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_no_negative.module,v 1.1.4.4 2009-01-15 16:38:11 kbahey Exp $ 
+// $Id: userpoints_no_negative.module,v 1.1.4.5 2009-01-19 14:07:03 kbahey Exp $ 
 
 // @file
 // Very simple userpoints_contrib to prevent accounts from going (further) negative
@@ -7,10 +7,10 @@
 // Implementation of hook_userpoints
 
 function userpoints_no_negative_userpoints($op, $params = array()) {
-  $points = $params['points'];
-  $uid    = $params['uid'];
-
   if ($op == 'points before') {
+    $points = $params['points'];
+    $uid    = $params['uid'];
+
     if ($points < 0) {
       $current_points = userpoints_get_current_points($uid, 'all');
       if (($current_points + $points) < 0) {
