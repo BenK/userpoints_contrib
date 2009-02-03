@@ -1,6 +1,6 @@
 <?php
 
-//$Id: userpoints_role.module,v 1.4.2.4 2009-01-11 19:07:14 kbahey Exp $
+//$Id: userpoints_role.module,v 1.4.2.5 2009-02-03 17:00:01 kbahey Exp $
 
 // Copyright 2005-2008 Khalid Baheyeldin http://2bits.com
 
@@ -271,7 +271,7 @@ function userpoints_role_leave($uid, $role_point) {
 }
 
 function userpoints_role_send_mail($op = 'join', $uid, $role_point) {
-  $account = user_load(array('uid'=>$uid));
+  $account = user_load(array('uid' => $uid));
   $vars = array(
     '!username' => $account->name,
     '!rolename' => $role_point['name'],
