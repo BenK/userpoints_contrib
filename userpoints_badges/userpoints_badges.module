@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_badges.module,v 1.1.2.2 2009-02-22 04:47:00 kbahey Exp $
+// $Id: userpoints_badges.module,v 1.1.2.3 2009-02-22 06:56:17 kbahey Exp $
 
 function userpoints_badges_menu() {
   $items = array();
@@ -118,7 +118,7 @@ function userpoints_badges_userpoints($op, $params = array()) {
       foreach ($badges as $badge) {
         if ($total_points >= $badge->userpoints_goal) {
           if (!db_result(db_query('SELECT uid FROM {user_badges_user} WHERE bid=%d AND uid=%d', $badge->bid, $params['uid']))) {
-            user_badges_user_add_badge($uid, $badge->bid, t('Userpoints @bid', array('@bid' => $badge->bid)));
+            user_badges_user_add_badge($params['uid'], $badge->bid, t('Userpoints @bid', array('@bid' => $badge->bid)));
           }
         }
       }
