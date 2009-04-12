@@ -1,5 +1,5 @@
 <?php
-//$Id: userpoints_role_exempt.module,v 1.3.2.2 2009-01-11 19:09:44 kbahey Exp $
+//$Id: userpoints_role_exempt.module,v 1.3.2.3 2009-04-12 19:14:56 kbahey Exp $
 
 // Copyright 2005-2008 Khalid Baheyeldin http://2bits.com
 
@@ -37,16 +37,40 @@ function userpoints_role_exempt_userpoints($op, $params = array()) {
       return $form;
 
     case 'points before':
-      $uid = $params['uid'];
-      // Check the roles the user belong to, and if they are exempted from userpoints
-      $user = user_load(array('uid'=>$uid));
-      $rc = TRUE;
-      foreach($user->roles as $rid => $name) {
-        if (variable_get(USERPOINTS_ROLE_EXEMPT . $rid, 0)) {
-          $rc = FALSE;
-          break;
-        }
+      if (userpoints_role_exempt_is_exempt($params['uid'])) {
+        // User is exempt
+        return FALSE;
       }
-      return $rc;
+      else {
+        return TRUE;
+      }
   }
 }
+
+/**
+ * Check the roles the user belong to, and if they are exempted from userpoints
+ *
+ * @param: $uid: The user UID
+ *
+ * @return: TRUE if the user is exempt, FALSE if the user is not exempt.
+ */
+function userpoints_role_exempt_is_exempt($uid) {
+  // If the user is anonymous, they are exempt anyway
+  if ($uid == 0) {
+    return TRUE;
+  }
+  // Load the user object
+  $account = user_load(array('uid' => $uid));
+
+  // Search the user's roles
+  foreach($account->roles as $rid => $name) {
+    // Check if they belong to any role that is exempt
+    if (variable_get(USERPOINTS_ROLE_EXEMPT . $rid, 0)) {
+      // User is exempt
+      return TRUE;
+    }
+  }
+  // User is not exempt
+  return FALSE;
+}
+
