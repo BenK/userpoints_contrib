@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_retroactive.module,v 1.5.2.1 2009-03-31 17:03:52 kbahey Exp $
+// $Id: userpoints_retroactive.module,v 1.5.2.2 2009-04-15 12:38:02 kbahey Exp $
 
 // Based on a script by Miguel Figueiredo <elmig@debianpt.org>, 2006
 
@@ -71,7 +71,7 @@ function userpoints_retroactive_do() {
   $num += userpoints_retroactive_comments();
   $num += userpoints_retroactive_votingapi();
   $ms = timer_read('up_retro');
-  watchdog('userpoints', 'Userpoints retroactive processed %count items in %ms milliseconds', array('%ms' => $ms, '%count' => $num));
+  watchdog('userpoints', t('Userpoints retroactive processed %count items in %ms milliseconds'), array('%ms' => $ms, '%count' => $num));
 }
 
 function userpoints_retroactive_nodes() {
@@ -83,7 +83,7 @@ function userpoints_retroactive_nodes() {
       'points'    => ($node->val * $weight),
       'moderate'  => FALSE,
       'display'   => FALSE,
-      'operation' => 'Retroactive node',
+      'operation' => t('Retroactive node'),
     );
     userpoints_userpointsapi($params);
     $num++;
@@ -100,7 +100,7 @@ function userpoints_retroactive_comments() {
       'points'    => ($comment->val * $weight),
       'moderate'  => FALSE,
       'display'   => FALSE,
-      'operation' => 'Retroactive comment',
+      'operation' => t('Retroactive comment'),
     );
     userpoints_userpointsapi($params);
     $num++;
@@ -117,7 +117,7 @@ function userpoints_retroactive_votingapi() {
       'points'    => ($u->val * $weight),
       'moderate'  => FALSE,
       'display'   => FALSE,
-      'operation' => 'Retroactive votingapi',
+      'operation' => t('Retroactive votingapi'),
     );
     userpoints_userpointsapi($params);
     $num++;
