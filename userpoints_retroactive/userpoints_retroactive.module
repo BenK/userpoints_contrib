@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_retroactive.module,v 1.5.2.2 2009-04-15 12:38:02 kbahey Exp $
+// $Id: userpoints_retroactive.module,v 1.5.2.3 2009-05-01 03:38:11 kbahey Exp $
 
 // Based on a script by Miguel Figueiredo <elmig@debianpt.org>, 2006
 
@@ -61,20 +61,18 @@ function userpoints_retroactive_submit($form, &$form_state) {
 }
 
 function userpoints_retroactive_do() {
-  userpoints_retroactive_nodes();
-  userpoints_retroactive_comments();
-
-
   set_time_limit(240);
   timer_start('up_retro');
   $num = userpoints_retroactive_nodes();
   $num += userpoints_retroactive_comments();
   $num += userpoints_retroactive_votingapi();
   $ms = timer_read('up_retro');
+
   watchdog('userpoints', t('Userpoints retroactive processed %count items in %ms milliseconds'), array('%ms' => $ms, '%count' => $num));
 }
 
 function userpoints_retroactive_nodes() {
+  $num = 0;
   $result = db_query("SELECT uid, type, COUNT(uid) AS val FROM {node} WHERE uid > 0 GROUP BY uid, type");
   while($node = db_fetch_object($result)) {
     $weight = variable_get(USERPOINTS_POST . $node->type, 0);
@@ -92,6 +90,7 @@ function userpoints_retroactive_nodes() {
 }
 
 function userpoints_retroactive_comments() {
+  $num = 0;
   $weight = variable_get(USERPOINTS_POST_COMMENT, 0);
   $result = db_query('SELECT uid, COUNT(uid) AS val FROM {comments} WHERE uid > 0 GROUP BY uid');
   while($comment = db_fetch_object($result)) {
@@ -109,6 +108,7 @@ function userpoints_retroactive_comments() {
 }
 
 function userpoints_retroactive_votingapi() {
+  $num = 0;
   $weight = variable_get('userpoints_votingapi_vote', 0);
   $result = db_query('SELECT uid, COUNT(*) AS val from {votingapi_vote} GROUP BY uid');
   while($u = db_fetch_object($result)) {
