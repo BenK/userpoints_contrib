@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_retroactive.module,v 1.5.2.3 2009-05-01 03:38:11 kbahey Exp $
+// $Id: userpoints_retroactive.module,v 1.5.2.4 2009-05-17 16:49:20 kbahey Exp $
 
 // Based on a script by Miguel Figueiredo <elmig@debianpt.org>, 2006
 
@@ -73,7 +73,7 @@ function userpoints_retroactive_do() {
 
 function userpoints_retroactive_nodes() {
   $num = 0;
-  $result = db_query("SELECT uid, type, COUNT(uid) AS val FROM {node} WHERE uid > 0 GROUP BY uid, type");
+  $result = db_query("SELECT uid, type, COUNT(uid) AS val FROM {node} WHERE status = 1 AND uid > 0 GROUP BY uid, type");
   while($node = db_fetch_object($result)) {
     $weight = variable_get(USERPOINTS_POST . $node->type, 0);
     $params = array(
@@ -92,7 +92,7 @@ function userpoints_retroactive_nodes() {
 function userpoints_retroactive_comments() {
   $num = 0;
   $weight = variable_get(USERPOINTS_POST_COMMENT, 0);
-  $result = db_query('SELECT uid, COUNT(uid) AS val FROM {comments} WHERE uid > 0 GROUP BY uid');
+  $result = db_query('SELECT uid, COUNT(uid) AS val FROM {comments} WHERE status = 0 AND uid > 0 GROUP BY uid');
   while($comment = db_fetch_object($result)) {
     $params = array(
       'uid'       => $comment->uid,
