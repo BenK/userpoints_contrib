@@ -1,6 +1,6 @@
 <?php
 
-//$Id: userpoints_invite.module,v 1.9.2.3 2009-04-01 22:44:52 kbahey Exp $
+//$Id: userpoints_invite.module,v 1.9.2.4 2009-08-08 03:59:10 kbahey Exp $
 
 // Copyright 2005-2007 Khalid Baheyeldin http://2bits.com
 
@@ -86,9 +86,6 @@ function userpoints_invite($op, $args) {
         'reference'   => 'userpoints_invite'
       );
       userpoints_userpointsapi($params);
-      if (!$_COOKIE['upi']) {
-        setcookie('upi', md5(microtime()));
-      }
       break;
     case 'cancel':
       $points = -variable_get(USERPOINTS_INVITE_INVITE, 0);
@@ -115,9 +112,7 @@ function userpoints_invite($op, $args) {
         'tid'         => variable_get('userpoints_invite_tid', 0),
         'reference'   => 'userpoints_invite'
       );
-      if (!$_COOKIE['upi']) {
-        userpoints_userpointsapi($params);
-      }
+      userpoints_userpointsapi($params);
       $points = variable_get(USERPOINTS_INVITE_REGISTER_INVITEE, 0);
       $params = array(
         'points'      => $points,
@@ -128,9 +123,7 @@ function userpoints_invite($op, $args) {
         'tid'         => variable_get('userpoints_invite_tid', 0),
         'reference'   => 'userpoints_invite'
       );
-      if (!$_COOKIE['upi']) {
-        userpoints_userpointsapi($params);
-      }
+      userpoints_userpointsapi($params);
       break;
   }
 }
