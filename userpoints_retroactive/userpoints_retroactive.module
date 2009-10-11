@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_retroactive.module,v 1.5.2.4 2009-05-17 16:49:20 kbahey Exp $
+// $Id: userpoints_retroactive.module,v 1.5.2.5 2009-10-11 17:52:45 kbahey Exp $
 
 // Based on a script by Miguel Figueiredo <elmig@debianpt.org>, 2006
 
@@ -65,7 +65,9 @@ function userpoints_retroactive_do() {
   timer_start('up_retro');
   $num = userpoints_retroactive_nodes();
   $num += userpoints_retroactive_comments();
-  $num += userpoints_retroactive_votingapi();
+  if (module_exists('votingapi')) {
+    $num += userpoints_retroactive_votingapi();
+  }
   $ms = timer_read('up_retro');
 
   watchdog('userpoints', t('Userpoints retroactive processed %count items in %ms milliseconds'), array('%ms' => $ms, '%count' => $num));
