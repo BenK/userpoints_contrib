@@ -1,5 +1,5 @@
 <?php
-// $Id: user2userpoints.module,v 1.4.2.1 2009-01-11 00:46:43 kbahey Exp $
+// $Id: user2userpoints.module,v 1.4.2.2 2009-11-27 02:39:48 kbahey Exp $
 
 /**
  * @file
@@ -14,6 +14,7 @@ define('USER2USERPOINTS_FIELDSET_TITLE',  'user2userpoints_fieldset_title');
 define('USER2USERPOINTS_TO_LABEL',        'user2userpoints_to_label');
 define('USER2USERPOINTS_AMOUNT_LABEL',    'user2userpoints_amount_label');
 define('USER2USERPOINTS_SHOW_CATEGORIES', 'user2userpoints_show_categories');
+define('USER2USERPOINTS_SHOW_LINKS',     'user2userpoints_show_links');
 
 /**
  * Implements hook_user().
@@ -48,7 +49,7 @@ function user2userpoints_menu() {
    *   [to] is uid or username of user points are given to
    *   [amount] (optional) is points quantity.  defaults to 1 if empty.
    *   [tid] (optional) taxonomy id, 'choose' to have user choose, 'all' to pass all param to userpoints api
-   * 
+   *
    * For example:
    *
    *   user2userpoints/              (a blank form is presented to the user)
@@ -74,18 +75,20 @@ function user2userpoints_menu() {
  */
 function user2userpoints_link($type, $node = NULL, $teaser = FALSE) {
   global $user;
-  $links = array();
-  if ($node->uid != $user->uid) {
-    if ($node->type != 'page') {
-      if (user_access(USER2USERPOINTS_PERM_SEND)) {
-        $links['user2userpoints'] = array(
+  if (variable_get(USER2USERPOINTS_SHOW_LINKS,TRUE)) {
+    $links = array();
+    if ($node->uid != $user->uid) {
+      if ($node->type != 'page') {
+        if (user_access(USER2USERPOINTS_PERM_SEND)) {
+          $links['user2userpoints'] = array(
           'title' => t('Give !points', userpoints_translation()),
           'href'  => 'user2userpoints/'. $node->name
-        );
+          );
+        }
       }
     }
+    return $links;
   }
-  return $links;
 }
 
 function user2userpoints_giveform(&$form_state,  $account = NULL, $amount = 0, $tid = 0) {
@@ -260,7 +263,12 @@ function user2userpoints_userpoints($op, $params = array()) {
         '#default_value' => variable_get(USER2USERPOINTS_SHOW_CATEGORIES, TRUE),
         '#description'   => 'If a taxonomy id is passed via the url or post or get form, the taxonomy id will still be assigned. It will be passed along as a hidden input in the form.',
       );
-
+      $form['user2user'][USER2USERPOINTS_SHOW_LINKS] = array(
+        '#type'          => 'checkbox',
+        '#title'         => t("Show 'Give Userpoints' links beneath nodes"),
+        '#default_value' => TRUE,
+        '#description'   => t("Nodes that are not of type 'page' will have a 'Give points' link added to them"),
+      );
       return $form;
       break;
   }
