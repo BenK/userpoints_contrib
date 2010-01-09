@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_nodelimit.module,v 1.4.2.1 2009-10-25 23:58:59 kbahey Exp $
+// $Id: userpoints_nodelimit.module,v 1.4.2.2 2010-01-09 00:18:45 kbahey Exp $
 
 /**
  * Enables a limit on node creation based on user's current user points.
@@ -27,12 +27,14 @@ function userpoints_nodelimit_form_alter(&$form, $form_state, $form_id) {
   }
   else {
     if (isset($form['#node']) && isset($form['#method']) && $form['#node']->type .'_node_form' == $form_id) {
+      $type = $form['#node']->type;
       // This is a node form
-      if (userpoints_nodelimit_get_setting($form['#node']->type) == USERPOINTS_NODELIMIT_ENABLED) {
+      if (userpoints_nodelimit_get_setting($type) == USERPOINTS_NODELIMIT_ENABLED) {
 			  // check the number of available user points against the requirements for this node
-        if (!userpoints_nodelimit_check($form['#node']->type)) {
-     		  drupal_set_message(userpoints_nodelimit_insufficent_points_message($form['#node']->type), 'error');
-      	  //destory the form
+        if (!userpoints_nodelimit_check($type)) {
+          $friendly_name = node_get_types('name', $form['#node']); 
+     		  drupal_set_message(theme('userpoints_nodelimit_insufficent_points_message', $type, $friendly_name), 'error');
+      	  //destroy the form
       	  $form = NULL;
       	  //return a simple hidden field so that function doesn't fail
       	  $form['dummy'] = array(
@@ -54,21 +56,24 @@ function userpoints_nodelimit_form_alter(&$form, $form_state, $form_id) {
   * Form validation
   */ 
 function userpoints_nodelimit_validate($form, &$form_state) {
-  
   // check the user points and confirm they have enough
-  if (!userpoints_nodelimit_check($form['#node']->type))
-    form_set_error('userpoints_nodelimit_details', userpoints_nodelimit_insufficent_points_message($form['#node']->type));
+  $type = $form['#node']->type;
+  if (!userpoints_nodelimit_check($type)) {
+    $friendly_name = node_get_types('name', $form['#node']); 
+    form_set_error('userpoints_nodelimit_details', theme('userpoints_nodelimit_insufficent_points_message',$type, $friendly_name));
+  }
 }
 
 /**
   * Node Limit Error Message
   */
-function userpoints_nodelimit_insufficent_points_message($node_type) {
-	$html_message =	t('You do not have enought !points to create a @Title<br />You currently have @user_points !Points, you need @node_points !Points to create a @Title.', 
+function theme_userpoints_nodelimit_insufficent_points_message($node_type, $friendly_name) {
+	$html_message =	t('You do not have enough !points to create @friendly content.<br />You currently have @user_points !points, you need @node_points !points to create a @friendly.', 
     array_merge(userpoints_translation(), 
     array('@user_points' => userpoints_get_current_points($user->uid), 
       '@node_points' => variable_get('userpoints_nodelimit_nodepoints_'.$node_type, '?'),
-      '@Title' => $node_type
+      '@friendly' => $friendly_name,
+      '@type' => $node_type
       ) 
     )
   );
@@ -145,3 +150,13 @@ function userpoints_nodelimit_check($nodetype) {
   }
 }
 
+/**
+ * Implementation of hook_theme()
+ */
+
+function userpoints_nodelimit_theme($existing, $type, $theme, $path) {
+  return array(
+    'userpoints_nodelimit_insufficent_points_message' => array(
+      'arguments' => array('node_type' => NULL, 'friendly_name' => NULL),
+      ));
+}
