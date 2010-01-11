@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_nodelimit.module,v 1.4.2.2 2010-01-09 00:18:45 kbahey Exp $
+// $Id: userpoints_nodelimit.module,v 1.4.2.3 2010-01-11 04:20:48 kbahey Exp $
 
 /**
  * Enables a limit on node creation based on user's current user points.
@@ -28,12 +28,14 @@ function userpoints_nodelimit_form_alter(&$form, $form_state, $form_id) {
   else {
     if (isset($form['#node']) && isset($form['#method']) && $form['#node']->type .'_node_form' == $form_id) {
       $type = $form['#node']->type;
-      // This is a node form
+      // This is a node form; user is either adding a new node or editing an existing one.
+      // Don't check if user is editing node.  Access check has happened already, so user is assumed to have access to edit / create this node type.
       if (userpoints_nodelimit_get_setting($type) == USERPOINTS_NODELIMIT_ENABLED) {
-			  // check the number of available user points against the requirements for this node
-        if (!userpoints_nodelimit_check($type)) {
+        // check the number of available user points against the requirements for this node
+        // Only check when user is adding a new node.  $form['#node']->nid is unset when adding a new node.
+        if (!isset($form['#node']->nid) && !userpoints_nodelimit_check($type)) {
           $friendly_name = node_get_types('name', $form['#node']); 
-     		  drupal_set_message(theme('userpoints_nodelimit_insufficent_points_message', $type, $friendly_name), 'error');
+          drupal_set_message(theme('userpoints_nodelimit_insufficent_points_message', $type, $friendly_name), 'error');
       	  //destroy the form
       	  $form = NULL;
       	  //return a simple hidden field so that function doesn't fail
@@ -58,7 +60,9 @@ function userpoints_nodelimit_form_alter(&$form, $form_state, $form_id) {
 function userpoints_nodelimit_validate($form, &$form_state) {
   // check the user points and confirm they have enough
   $type = $form['#node']->type;
-  if (!userpoints_nodelimit_check($type)) {
+  // check the number of available user points against the requirements for this node
+  // Only check when user is adding a new node.  $form['#node']->nid is unset when adding a new node.
+  if (!isset($form['#node']->nid) && !userpoints_nodelimit_check($type)) {
     $friendly_name = node_get_types('name', $form['#node']); 
     form_set_error('userpoints_nodelimit_details', theme('userpoints_nodelimit_insufficent_points_message',$type, $friendly_name));
   }
