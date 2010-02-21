@@ -1,5 +1,5 @@
 <?php
-// $Id: userpoints_retroactive.module,v 1.5.2.5 2009-10-11 17:52:45 kbahey Exp $
+// $Id: userpoints_retroactive.module,v 1.5.2.6 2010-02-21 21:39:58 kbahey Exp $
 
 // Based on a script by Miguel Figueiredo <elmig@debianpt.org>, 2006
 
@@ -78,8 +78,10 @@ function userpoints_retroactive_nodes() {
   $result = db_query("SELECT uid, type, COUNT(uid) AS val FROM {node} WHERE status = 1 AND uid > 0 GROUP BY uid, type");
   while($node = db_fetch_object($result)) {
     $weight = variable_get(USERPOINTS_POST . $node->type, 0);
+    $tid = variable_get(USERPOINTS_POST . $node->type . '_category', 0);
     $params = array(
       'uid'       => $node->uid,
+      'tid'       => $tid,
       'points'    => ($node->val * $weight),
       'moderate'  => FALSE,
       'display'   => FALSE,
@@ -94,10 +96,12 @@ function userpoints_retroactive_nodes() {
 function userpoints_retroactive_comments() {
   $num = 0;
   $weight = variable_get(USERPOINTS_POST_COMMENT, 0);
+  $tid = variable_get(USERPOINTS_POST_COMMENT . '_category', 0);
   $result = db_query('SELECT uid, COUNT(uid) AS val FROM {comments} WHERE status = 0 AND uid > 0 GROUP BY uid');
   while($comment = db_fetch_object($result)) {
     $params = array(
       'uid'       => $comment->uid,
+      'tid'       => $tid,
       'points'    => ($comment->val * $weight),
       'moderate'  => FALSE,
       'display'   => FALSE,
@@ -112,10 +116,12 @@ function userpoints_retroactive_comments() {
 function userpoints_retroactive_votingapi() {
   $num = 0;
   $weight = variable_get('userpoints_votingapi_vote', 0);
+  $tid = variable_get('userpoints_votingapi_tid', 0);
   $result = db_query('SELECT uid, COUNT(*) AS val from {votingapi_vote} GROUP BY uid');
   while($u = db_fetch_object($result)) {
     $params = array(
       'uid'       => $u->uid,
+      'tid'       => $tid,
       'points'    => ($u->val * $weight),
       'moderate'  => FALSE,
       'display'   => FALSE,
