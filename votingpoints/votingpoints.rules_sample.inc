@@ -2,7 +2,7 @@
 //$Id: votingpoints.rules_sample.inc,v 1.1 2009-01-29 17:36:04 kbahey Exp $
 
 /**
- * Implementation of hook_rules_actions_default
+ * Implements hook_rules_actions_default
  */
 function votingpoints_rules_defaults() {
   return array (

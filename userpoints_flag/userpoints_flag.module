@@ -1,6 +1,6 @@
 <?php
 /**
- * Implementation of hook_form_alter().
+ * Implements hook_form_alter().
  *
  * Extends User Points module with Flag settings.
  */
@@ -63,7 +63,7 @@ function userpoints_flag_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
- * Implementation of hook_flag().
+ * Implements hook_flag().
  *
  */
  

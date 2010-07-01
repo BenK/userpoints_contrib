@@ -7,7 +7,7 @@
  */
 
 /**
- * Implementation of hook_userpoints
+ * Implements hook_userpoints
  */
 function userpoints_no_negative_userpoints($op, $params = array()) {
 	$uid = $params['uid'];

@@ -9,7 +9,7 @@
 */
 
 /**
- * Implementation of hook_votingapi_insert
+ * Implements hook_votingapi_insert
 * @ingroup votingapi
  */
 function votingpoints_votingapi_insert($votes) {

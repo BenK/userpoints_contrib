@@ -2,14 +2,14 @@
 // $Id: userpoints_pageviews.install,v 1.1 2009-01-16 15:31:20 kbahey Exp $
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function userpoints_pageviews_install() {
   drupal_install_schema('userpoints_pageviews');
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function userpoints_pageviews_uninstall() {
   drupal_uninstall_schema('userpoints_pageviews');
@@ -18,7 +18,7 @@ function userpoints_pageviews_uninstall() {
 
 
 /**
-* Implementation of hook_schema().
+* Implements hook_schema().
 */
 function userpoints_pageviews_schema() {
   $schema = array();

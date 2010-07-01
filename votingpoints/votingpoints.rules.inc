@@ -9,7 +9,7 @@
 # Events
 
 /**
-* Implementation of hook_rules_event_info().
+* Implements hook_rules_event_info().
 * @ingroup rules
 */
 function votingpoints_rules_event_info() {

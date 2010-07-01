@@ -3,11 +3,5 @@ name = Role
 description = Users join/leave roles as they earn/lose certain points threshold.
 dependencies[] = userpoints
 package = Userpoints
-
-; Information added by drupal.org packaging script on 2008-08-04
-version = "6.x-3.x-dev"
-project = "userpoints_contrib"
-datestamp = "1217808773"
-
-
-core = 6.x
+core = 7.x
+files[]=userpoints_role.module

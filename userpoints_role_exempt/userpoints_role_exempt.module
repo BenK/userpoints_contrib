@@ -38,7 +38,7 @@ function userpoints_role_exempt_userpoints($op, $params = array()) {
 
     case 'points before':
       // Check the roles the user belong to, and if they are exempted from userpoints
-      $user = user_load(array('uid'=>$params['uid']));
+      $user = user_load($params['uid']);
       $rc = TRUE;
       foreach($user->roles as $rid => $name) {
         if (variable_get(USERPOINTS_ROLE_EXEMPT . $rid, 0)) {

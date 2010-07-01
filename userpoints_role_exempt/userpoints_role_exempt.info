@@ -3,4 +3,5 @@ name = Role exempt
 description = Exempts certain roles from earning userpoints. Useful for admin and moderators.
 dependencies = userpoints
 package = Userpoints
-core = 6.x
+core = 7.x
+files[]=userpoints_role_exempt.module

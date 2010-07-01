@@ -101,7 +101,7 @@ function userpoints_badges_run_mass_badge_check($bid, $userpoints_goal) {
 }
 
 /**
- * Implementation of hook_userpoints
+ * Implements hook_userpoints
  */
 function userpoints_badges_userpoints($op, $params = array()) {
   switch ($op) {

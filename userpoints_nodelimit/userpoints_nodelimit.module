@@ -18,7 +18,7 @@ define('USERPOINTS_NODELIMIT_DISABLED', 0);
 define('USERPOINTS_NODELIMIT_ENABLED', 1);
 
 /**
- * Implementation of hook_form_alter().
+ * Implements hook_form_alter().
  */
 function userpoints_nodelimit_form_alter(&$form, $form_state, $form_id) {
 
@@ -109,7 +109,7 @@ function userpoints_nodelimit_get_setting($type) {
 }
 
 /**
- * Implementation of hook_node_type().
+ * Implements hook_node_type().
  */
 function userpoints_nodelimit_node_type($op, $info) {
   switch ($op) {

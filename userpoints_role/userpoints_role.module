@@ -11,10 +11,8 @@ define('USERPOINTS_ROLE',             'userpoints_role_');
 function userpoints_role_help($path, $arg) {
   switch ($path) {
     case 'admin/modules#description':
-      $output = t('Users gain/lose roles as they earn !points', userpoints_translation());
-      break;
+      return t('Users gain/lose roles as they earn !points', userpoints_translation());
   }
-  return $output;
 }
 
 /**
@@ -116,7 +114,7 @@ function _userpoints_update_roles($uid, $points, $new_points) {
 }
 
 function _userpoints_check_user_role($uid, $rid) {
-  return (int)db_result(db_query("SELECT COUNT(*) FROM {users_roles} WHERE rid = %d AND uid = %d", $rid, $uid));
+  return (bool)db_query_range("SELECT 1 FROM {users_roles} WHERE rid = :rid AND uid = :uid", 0, 1, array(':uid' => $uid, ':rid' => $rid))->fetchField();
 }
 
 function _userpoints_role_join($uid, $role_point) {
@@ -142,7 +140,7 @@ function _userpoints_role_leave($uid, $role_point) {
 }
 
 function _userpoints_send_mail($op = 'join', $uid, $role_point) {
-  $user = user_load(array('uid'=>$uid));
+  $user = user_load($uid);
   $vars = array(
     '!username' => $user->name,
     '!rolename' => $role_point['name'],
@@ -167,7 +165,7 @@ function _userpoints_send_mail($op = 'join', $uid, $role_point) {
 }
 
 /**
- * Implementation of hook_mail().
+ * Implements hook_mail().
  */
 function userpoints_role_mail($key, &$message, $params) {
   $message['subject'] = $params['subject'];
