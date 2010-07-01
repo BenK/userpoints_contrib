@@ -38,7 +38,7 @@ function user2userpoints_perm() {
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function user2userpoints_menu() {
 

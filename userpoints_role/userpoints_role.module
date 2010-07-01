@@ -35,7 +35,7 @@ function userpoints_role_help($path, $arg) {
 function userpoints_role_menu() {
   $items = array();
 
-  $items['admin/settings/userpoints/role/%'] = array(
+  $items['admin/config/people/userpoints/role/%'] = array(
     'title'            => t('!Points roles settings', userpoints_translation()),
     'description'      => t('Settings for role'),
     'page callback'    => 'drupal_get_form',
@@ -245,7 +245,7 @@ function _userpoints_role_update_roles($uid, $points, $new_points) {
 }
 
 function userpoints_role_check_user_role($uid, $rid) {
-  return (int)db_result(db_query("SELECT COUNT(*) FROM {users_roles} WHERE rid = %d AND uid = %d", $rid, $uid));
+  return (bool)db_query_range("SELECT 1 FROM {users_roles} WHERE rid = :rid AND uid = :uid", 0, 1, array(':uid' => $uid, ':rid' => $rid))->fetchField();;
 }
 
 function userpoints_role_join($uid, $role_point) {
@@ -271,7 +271,7 @@ function userpoints_role_leave($uid, $role_point) {
 }
 
 function userpoints_role_send_mail($op = 'join', $uid, $role_point) {
-  $account = user_load(array('uid' => $uid));
+  $account = user_load($uid);
   $vars = array(
     '!username' => $account->name,
     '!rolename' => $role_point['name'],
@@ -302,7 +302,7 @@ function userpoints_role_email($op = 'join', $type = 'text', $rid, $vars) {
 }
 
 /**
- * Implementation of hook_mail().
+ * Implements hook_mail().
  */
 function userpoints_role_mail($key, &$message, $params) {
   $message['subject'] = $params['subject'];

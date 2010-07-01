@@ -9,7 +9,7 @@ define('USERPOINTS_REGISTER_TID',      'userpoints_register_tid');
 define('USERPOINTS_REGISTER_DISPLAY',  'userpoints_register_display');
 
 /*
-* Implementation of hook_userpoints()
+* Implements hook_userpoints()
 * Creates points configuration form for awarding points for registering
 */
 
@@ -53,7 +53,7 @@ function userpoints_register_userpoints($op, $params = array()) {
 }
 
 /*
-*   Implementation of hook_user()
+*   Implements hook_user()
 *   Awards the points for registering
 */
 function userpoints_register_user($op, &$edit, &$account, $category = NULL) {
